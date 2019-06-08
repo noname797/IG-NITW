@@ -21,12 +21,24 @@ x += np.random.uniform(-4,4, 50)
 y=np.random.normal(0,1,50)
 n = len(x) # Number of data points 
 
+
+'''
+by using a library
+from sklearn.linear_model import LinearRegression
+regressor=LinearRegression()
+regressor.fit(x,y)
+
+plt.scatter(x,y,color='red')
+plt.plot(x,regressor.predict(x))
+plt.show()
+'''
 # Plot of Training Data 
 plt.scatter(x, y) 
 plt.xlabel('x') 
 plt.ylabel('y') 
 plt.title("Training Data") 
 plt.show() 
+
 
 
 X = tf.placeholder("float") 
