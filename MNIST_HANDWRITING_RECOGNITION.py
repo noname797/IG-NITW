@@ -23,6 +23,11 @@ classifier=Sequential()
 classifier.add(Flatten(input_shape=(28,28)))
 
 classifier.add(Dense(128,activation='relu'))
+classifier.add(Dense(128,activation='relu'))
+'''upon adding more units/hidden layer we may see overfitting,as the train set accuracy goes upto one,test set/validation set accuracy
+doesnt change much..
+if we reduce the number of units (like 2-3only)..we see underfitting that is low training accuracy and poor test set accuracy as compared to other cases'''
+
 
 classifier.add(Dense(10,activation='softmax'))
 
