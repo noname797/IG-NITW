@@ -32,3 +32,5 @@ sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9)
 classifier.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
 
 classifier.fit(x_train,y_train,epochs = 100,batch_size=64,validation_data=(x_test,y_test))
+
+#explaination on https://docs.google.com/document/d/17NtDAWE1VZDkLKimjRyGgyuj4NXDuG-eCXspgv6sD3E/edit?usp=sharing
