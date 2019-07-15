@@ -24,7 +24,7 @@ classifier.add(Dropout(rate=0.2))
 classifier.add(Flatten())
 
 classifier.add(Dense(512,activation='relu'))
-classifier.add(Dropout(0.2)
+classifier.add(Dropout(0.2))
 classifier.add(Dense(512,activation='relu'))
 classifier.add(Dropout(0.2))
 classifier.add(Dense(100,activation='softmax'))
