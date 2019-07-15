@@ -31,4 +31,4 @@ classifier.add(Dense(100,activation='softmax'))
 sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9)
 classifier.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
 
-classifier.fit_generator(training_set,epochs = 100,batch_size=64)
+classifier.fit(training_set,epochs = 100,batch_size=64)
