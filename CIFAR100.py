@@ -11,26 +11,26 @@ classifier=Sequential()
 
 classifier.add(Conv2D(128,(3,3),activation='relu',input_shape=(32,32,3)))
 classifier.add(MaxPooling2D(pool_size=(2,2)))
-classifier.add(Dropout(rate=0.2))
+classifier.add(Dropout(rate=0.25))
 
-classifier.add(Conv2D(128,(3,3),activation='relu'))
+classifier.add(Conv2D(64,(3,3),activation='relu'))
 classifier.add(MaxPooling2D(pool_size=(2,2)))
-classifier.add(Dropout(rate=0.2))
+classifier.add(Dropout(rate=0.25))
 
-classifier.add(Conv2D(128,(3,3),activation='relu'))
+classifier.add(Conv2D(32,(3,3),activation='relu'))
 classifier.add(MaxPooling2D(pool_size=(2,2)))
-classifier.add(Dropout(rate=0.2))
+classifier.add(Dropout(rate=0.25))
 
 classifier.add(Flatten())
 
 classifier.add(Dense(512,activation='relu'))
-classifier.add(Dropout(0.2))
+classifier.add(Dropout(0.3))
 classifier.add(Dense(512,activation='relu'))
-classifier.add(Dropout(0.2))
+classifier.add(Dropout(0.3))
 classifier.add(Dense(100,activation='softmax'))
 sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9)
-classifier.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
+classifier.compile(optimizer=sgd,loss='sparse_categorical_crossentropy',metrics=['accuracy'])
 
-classifier.fit(x_train,y_train,epochs = 100,batch_size=64,validation_data=(x_test,y_test))
+classifier.fit(x_train,y_train,epochs = 100,batch_size=128,validation_data=(x_test,y_test))
 
 #explaination on https://docs.google.com/document/d/17NtDAWE1VZDkLKimjRyGgyuj4NXDuG-eCXspgv6sD3E/edit?usp=sharing
