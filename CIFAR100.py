@@ -1,6 +1,6 @@
 import numpy as np
 from keras.datasets import cifar100
-
+from keras.optimizers import SGD
 (x_train, y_train), (x_test, y_test) = cifar100.load_data(label_mode='fine')
 x_train=x_train/255
 x_test=x_test/255
@@ -31,4 +31,4 @@ classifier.add(Dense(100,activation='softmax'))
 sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9)
 classifier.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
 
-classifier.fit(training_set,epochs = 100,batch_size=64)
+classifier.fit(x_train,y_train,epochs = 100,batch_size=64,validation_data=(x_test,y_test))
