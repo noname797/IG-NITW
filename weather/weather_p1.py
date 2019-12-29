@@ -191,7 +191,7 @@ model1.add(Dense(21))
 #model1.add(BatchNormalization())
 
 model1.compile(optimizer='rmsprop',loss='mse',metrics=['accuracy'])
-model1.fit(x_train_1_p1,y_train_1_p1.reshape(293,21),epochs=5,batch_size=128)
+model1.fit(x_train_1_p1,y_train_1_p1.reshape(293,21),epochs=5,batch_size=64)
 
 
 model2=Sequential()
@@ -213,18 +213,30 @@ model2.add(Dense(21))
 #model2.add(BatchNormalization())
 
 model2.compile(optimizer='rmsprop',loss='mse',metrics=['accuracy'])
-model2.fit(x_train_2_p1,y_train_2_p1.reshape(72,21),epochs=5,batch_size=128)
+model2.fit(x_train_2_p1,y_train_2_p1.reshape(72,21),epochs=5,batch_size=64)
 
 
 #for loop and apply svm and append the results into list from p1
 from sklearn.ensemble import RandomForestRegressor
-model_rf=RandomForestRegressor(n_estimators=2000)
-#model_rf.fit(x_train_2_p1[0].T,y_train_2_p1[0].T)
-model_rf.fit(x_train_1_p1[0].T,y_train_1_p1[0].T)#doubt
-model_rf.predict(svm_data_processed[0][1:-1,1:].T)#doubt (Gives better results for some)
-#model_rf.predict(x_train_2_p1[1].T)
-
-
+y_pred_p1=[]
+y_pred_p2=[]
+for i in range(len(x_train_1_p1)):
+    model_rf=RandomForestRegressor(n_estimators=500)
+    #model_rf.fit(x_train_1_p1[0].T,y_train_1_p1[0].T)
+    model_rf.fit(x_train_1_p1[i].T,y_train_1_p1[i].T)#doubt
+    y_pred_p1.append(model_rf.predict(x_train_1_p2[i].T))#doubt (Gives better results for some)
+    #model_rf.predict(x_train_1_p1[1].T)
+for i in range(len(x_train_2_p1)):
+    model_rf=RandomForestRegressor(n_estimators=500)
+    #model_rf.fit(x_train_2_p1[0].T,y_train_2_p1[0].T)
+    model_rf.fit(x_train_2_p1[i].T,y_train_2_p1[i].T)#doubt
+    y_pred_p2.append(model_rf.predict(x_train_2_p2[i].T))#doubt (Gives better results for some)
+    #model_rf.predict(x_train_2_p1[1].T)
+    
+y_pred_p1=np.array(y_pred_p1)
+y_pred_p1=y_pred_p1.reshape(293,1,21)
+y_pred_p2=np.array(y_pred_p2)
+y_pred_p2=y_pred_p2.reshape(72,1,21)
 import csv
 
 with open('filename', 'w') as myfile:
