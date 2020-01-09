@@ -73,15 +73,12 @@ def next_batch(batch_size):
     return x_batch,y_batch
 
 
-#think again you're sleepy
-
-
 #LSTM
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense,LSTM,Dropout,BatchNormalization
 initializer=tf.keras.initializers.GlorotNormal
-
+"""
 model0=Sequential()
 model0.add(Dense(128,activation='relu',input_shape=(x_train_rnn.shape[1],x_train_rnn.shape[2]),kernel_initializer=initializer))
 model0.add(Dropout(0.1))
@@ -102,11 +99,38 @@ model0.add(Dense(157))
 x_batch,y_batch=next_batch(64)
 
 model0.compile(optimizer='rmsprop',loss='mse',metrics=['accuracy'])
-model0.fit(x_batch,y_batch,epochs=5,batch_size=64)
+model0.fit(x_batch,y_batch,epochs=5,batch_size=64)"""
 
+x=tf.compat.v1.placeholder(tf.float32,shape=[None,x_train_rnn.shape[1],x_train_rnn.shape[2]])
+y=tf.compat.v1.placeholder(tf.float32,shape=[None,y_train_rnn.shape[1]*y_train_rnn.shape[2]])
+'''
+def model_inputs():
+    """
+    Create the model inputs
+    """
+    inputs_ = tf.compat.v1.placeholder(tf.int32, [None, None], name='inputs')
+    labels_ = tf.compat.v1.placeholder(tf.int32, [None, None], name='labels')
+    keep_prob_ = tf.compat.v1.placeholder(tf.float32, name='keep_prob')
 
+def build_lstm_layers(lstm_sizes ,keep_prob_, batch_size):
 
+    lstms = [tf.compat.v1.nn.rnn_cell.BasicRNNCell(size) for size in lstm_sizes]
+    # Add dropout to the cell
+    drops = [tf.compat.v1.nn.rnn_cell.DropoutWrapper(lstm, output_keep_prob=keep_prob_) for lstm in lstms]
+    # Stack up multiple LSTM layers, for deep learning
+    cell = tf.compat.v1.nn.rnn_cell.MultiRNNCell(drops)
+ # Getting an initial state of all zeros
+    initial_state = cell.zero_state(batch_size, tf.float32)
+    lstm_outputs, final_state = tf.keras.layers.RNN(cell, initial_state=initial_state)
 
+model=build_lstm_layers([512,1024,256],0.2,64)'''
+'''
+cell = tf.compat.v1.nn.rnn_cell.LSTMCell(512, state_is_tuple=True)
+cell = tf.compat.v1.nn.rnn_cell.MultiRNNCell([cell] * 5, state_is_tuple=True)
+states_series, current_state = tf.compat.v1.nn.rnn_cell(cell, , initial_state=rnn_tuple_state)
+'''
+
+#try creating lstm model without keras using feed dict
 #preprocessing SVM
 
 svm_data=[]
