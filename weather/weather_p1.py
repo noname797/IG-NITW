@@ -10,7 +10,7 @@ import tensorflow as tf
 import numpy as np
 
 
-#preprocessing LSTM
+#preprocessing LSTM for continuous 7 days
 
 dataset=pd.read_csv("final_data.csv")
 
@@ -44,7 +44,7 @@ train_dataset=data_p.values
 
 x_train_rnn=[]
 y_train_rnn=[]
-
+x_test_rnn=[]
 
 
 
@@ -52,10 +52,17 @@ for i in range(120,3943-120):
     x_train_rnn.append(train_dataset[i-113:i+7,:])
     y_train_rnn.append(train_dataset[i-120:i-113,:])
 
+for i in range(120,3943-120):
+    x_test_rnn.append(train_dataset[i-120:i,:])
+
+
+
 x_train_rnn=np.array(x_train_rnn)
 y_train_rnn=np.array(y_train_rnn)
 x_train_rnn=x_train_rnn[:,:,1:].astype("float32")
 y_train_rnn=y_train_rnn[:,:,1:].astype("float32")
+x_test_rnn=np.array(x_test_rnn)
+x_test_rnn=x_test_rnn[:,:,1:].astype("float32")
 
 a=x_train_rnn.reshape(3703,120*21)
 '''
@@ -79,24 +86,29 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense,LSTM,Dropout,BatchNormalization
 initializer=tf.keras.initializers.GlorotNormal
 model0=Sequential()
-model0.add(Dense(128,activation='relu',input_shape=(x_train_rnn.shape[1],x_train_rnn.shape[2]),kernel_initializer=initializer))
+model0.add(Dense(64,activation='relu',input_shape=(x_train_rnn.shape[1],x_train_rnn.shape[2]),kernel_initializer=initializer))
 model0.add(Dropout(0.1))
-model0.add(LSTM(512,kernel_initializer=initializer,dropout=0.15,recurrent_dropout=0.15,return_sequences=True,go_backwards=True))
-model0.add(BatchNormalization())
-#model0.add(LSTM(1024,kernel_initializer=initializer,dropout=0.15,recurrent_dropout=0.15,return_sequences=True,go_backwards=True))
+model0.add(LSTM(128,kernel_initializer=initializer,dropout=0.15,recurrent_dropout=0.15,return_sequences=True,go_backwards=True))
 #model0.add(BatchNormalization())
-model0.add(LSTM(512,kernel_initializer=initializer,dropout=0.15,recurrent_dropout=0.15,go_backwards=True))
-model0.add(BatchNormalization())
-#model0.add(Dense(1024,activation='relu',kernel_initializer=initializer))
-#model0.add(Dropout(0.1))
+model0.add(LSTM(256,kernel_initializer=initializer,dropout=0.15,recurrent_dropout=0.15,return_sequences=True,go_backwards=True))
 #model0.add(BatchNormalization())
-#model0.add(Dense(512,activation='relu',kernel_initializer=initializer))
-#model0.add(Dropout(0.1))
+model0.add(LSTM(128,kernel_initializer=initializer,dropout=0.15,recurrent_dropout=0.15,go_backwards=True))
+model0.add(BatchNormalization())
+model0.add(Dense(128,activation='relu',kernel_initializer=initializer))
+model0.add(Dropout(0.1))
+#model0.add(BatchNormalization())
+model0.add(Dense(64,activation='relu',kernel_initializer=initializer))
+model0.add(Dropout(0.1))
 #model0.add(BatchNormalization())
 model0.add(Dense(147))
 #model0.add(BatchNormalization())
 model0.compile(optimizer='rmsprop',loss='mse',metrics=['accuracy'])
-model0.fit(x_train_rnn,y_train_rnn.reshape(3703,7*21),epochs=50,batch_size=64)
+model0.fit(x_train_rnn,y_train_rnn.reshape(3703,7*21),epochs=1,batch_size=64)
+
+y_pred_rnn=model0.predict(x_test_rnn)
+y_pred_rnn=y_pred_rnn.reshape(3703,7,21)
+#Removing normalisation makes sense logically
+
 '''
 x=tf.compat.v1.placeholder(tf.float32,shape=[None,x_train_rnn.shape[1],x_train_rnn.shape[2]])
 y=tf.compat.v1.placeholder(tf.float32,shape=[None,y_train_rnn.shape[1]*y_train_rnn.shape[2]])
@@ -235,6 +247,16 @@ y_train_2_p2=svm_data_processed_2[:,0,1:].reshape(72,1,21)
 
 
 
+
+
+
+
+
+
+
+
+##Somethings wrong here I dont know what
+
 #lstm considering last 7 years
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense,LSTM,Dropout,BatchNormalization
@@ -242,24 +264,23 @@ initializer=tf.keras.initializers.GlorotNormal
 y_train_1_p1=y_train_1_p1.reshape(293,21)
 
 model1=Sequential()
-model1.add(Dense(128,activation='relu',input_shape=(x_train_1_p1.shape[1],x_train_1_p1.shape[2]),kernel_initializer=initializer))
+model1.add(Dense(64,activation='relu',input_shape=(x_train_1_p1.shape[1],x_train_1_p1.shape[2]),kernel_initializer=initializer))
 model1.add(Dropout(0.1))
-model1.add(LSTM(512,kernel_initializer=initializer,dropout=0.15,recurrent_dropout=0.15,return_sequences=True,go_backwards=True))
-model1.add(BatchNormalization())
-model1.add(LSTM(1024,kernel_initializer=initializer,dropout=0.15,recurrent_dropout=0.15,return_sequences=True,go_backwards=True))
-model1.add(BatchNormalization())
-model1.add(LSTM(512,kernel_initializer=initializer,dropout=0.15,recurrent_dropout=0.15,go_backwards=True))
-model1.add(BatchNormalization())
-model1.add(Dense(1024,activation='relu',kernel_initializer=initializer))
+model1.add(LSTM(128,kernel_initializer=initializer,dropout=0.15,recurrent_dropout=0.15,return_sequences=True,go_backwards=True))
+#model1.add(BatchNormalization())
+model1.add(LSTM(128,kernel_initializer=initializer,dropout=0.15,recurrent_dropout=0.15,return_sequences=True,go_backwards=True))
+#model1.add(BatchNormalization())
+model1.add(LSTM(256,kernel_initializer=initializer,dropout=0.15,recurrent_dropout=0.15,go_backwards=True))
+#model1.add(BatchNormalization())
+model1.add(Dense(128,activation='relu',kernel_initializer=initializer))
 model1.add(Dropout(0.1))
-model1.add(BatchNormalization())
-model1.add(Dense(512,activation='relu',kernel_initializer=initializer))
+#model1.add(BatchNormalization())
+model1.add(Dense(128,activation='relu',kernel_initializer=initializer))
 model1.add(Dropout(0.1))
-model1.add(BatchNormalization())
+#model1.add(BatchNormalization())
 model1.add(Dense(21))
 
-
-model1.compile(optimizer='adam',loss='mse',metrics=['accuracy'])
+model1.compile(optimizer='rmsprop',loss='mse',metrics=['accuracy'])
 model1.fit(x_train_1_p1,y_train_1_p1,epochs=50,batch_size=32)
 
 
