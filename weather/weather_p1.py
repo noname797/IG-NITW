@@ -338,3 +338,6 @@ import csv
 with open('filename', 'w') as myfile:
     w = csv.writer(myfile, quoting=csv.QUOTE_ALL)
     w.writerow(svm_data)
+
+
+#This project is closed due to some issues
